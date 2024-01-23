@@ -1,0 +1,56 @@
+def mcm(d):
+
+    n = len(d) - 1
+    m = {(i,j): float('inf') for i in range(1, n+1) for j in range(i, n+1)}
+    #create a 2D graph of "adjacency lists" with values of infinity
+    
+    for i in range(1, n+1): #set the diagonal equal to 0
+        m[(i,i)] = 0
+    
+    for s in range(1, n): #loop through the graph
+        for i in range(1, n-s+1):
+            j = i+s
+            best = float('inf')
+            for k in range(i,j):
+                best = min(best, m[(i,k)]+m[(k+1,j)]+d[i-1]*d[k]*d[j])
+
+            m[(i,j)] = best #save the min mtx multiplication to each
+
+    
+    return m[(1,n)]
+
+d = [5, 20, 10, 50]
+
+print(mcm(d)) #this takes place in O(n^3) time 
+
+#This algorithm finds the least number of multiplications for mtx multi
+#To do this, the algorithm creates a graph with the size len(d)-1 by len(d)-1
+#In this graph we save the number of multiplications to get the matrix combinations
+
+#For example, to get A1, it's 0 multiplications since we do nothing, therefore the diagonal is all 0's
+#But to get A1*A2 it takes a number of multiplications
+#A1 is a axb matrix and A2 is a bxc matrix. So to multiply we do a * b * c
+#The resulting matrix is a x c
+
+#Note: axb bxc comes from our d[] values, a is d[0], b is d[1] and c is d[2]
+#There is always one more value in d than there are matrices
+
+#To do A1*A2*A3 we have to find the best way to order them
+#This discovered by finding different k values
+#The k values indicate which d[] we end with
+#d = [a,b,c,d]
+
+#For example say k = 2, A1*A2*A3 becomes (A1*A2)*A3
+#This because the equal wants m[(1,2)] + m[(3,3)] + d[0]*d[2]*d[3]
+
+#Remember: we know all necessary combinations suh as A1*A2 by this point through dynammic programming (our graph)
+#Thefore we know m[(1,2)] and m[(3,3)] already, m[(1,2)] is a*b*c, m[(3,3)] = 0
+#The only calculation we are making at this point is d[0]*d[2]*d[3]
+#And we know these values, d[0] is a, d[2] is c, d[3] is d
+
+#Therefore this is solved by a*b*c + 0 + a*c*d
+
+#While doing this algorithm, we track the best (min) number of multiplications using the possible values of k
+#Once all k's were tested, we save this value to the graph
+
+#And finally we return m[(1,n)] giving us the best number of multiplications for these matrices.
