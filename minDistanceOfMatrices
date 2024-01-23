@@ -1,0 +1,73 @@
+import json
+import heapq
+
+def load_matrix():
+    with open('matrix.json', 'r') as jsonfile:
+        return json.load(jsonfile)
+
+def create_graph(matrix): #create a graph of adjacency lists (x,y): weight for each point
+    rows = len(matrix)
+    cols = len(matrix[0])
+    graph = {}
+
+    #check if you can move any of the 4 directions from the current point (i,j),
+    #if so what is the cost to do so?
+    for i in range(rows):
+        for j in range(cols):
+            movements = []
+            if i > 0:
+                movements.append((i - 1, j))
+            if i < rows - 1:
+                movements.append((i + 1, j))
+            if j > 0:
+                movements.append((i, j - 1))
+            if j < cols - 1:
+                movements.append((i, j + 1))
+
+            #save the cost to move to each point from a specified point
+            graph[(i, j)] = {n: matrix[n[0]][n[1]] for n in movements} 
+    
+    return graph
+
+def dijkstra(graph, source):
+    rows = len(matrix)
+    cols = len(matrix[0])
+    dist = {(i, j): float('inf') for i in range(rows) for j in range(cols)}
+    dist[source] = matrix[source[0]][source[1]]
+    #So far Dijkstra's is set up according to our notes with slight adjustments^
+
+    unvisited = [(dist[source], source)]
+    heapq.heapify(unvisited)
+
+    while len(unvisited) > 0:
+        currentDist, currentNode = heapq.heappop(unvisited)
+
+        for neighbor, weight in graph[currentNode].items():
+            newDist = dist[currentNode] + weight
+            if newDist < dist[neighbor]:
+                dist[neighbor] = newDist
+                heapq.heappush(unvisited, (newDist, neighbor))
+
+    return dist
+
+matrix = load_matrix()
+
+''' #testing for the algorithm
+matrix = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9]
+]
+'''
+
+graph = create_graph(matrix)
+
+#print(graph) #more testing
+
+source = (0, 0) #Starting at top left
+
+destination = (len(matrix) - 1, len(matrix[0]) - 1) #The point we are finding the path to
+
+distances = dijkstra(graph, source) #Finding the shortest path from source (0,0) to all other points
+
+print(f"The minimum sum path from the source to the destination is: {distances[destination]}")
