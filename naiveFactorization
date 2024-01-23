@@ -1,0 +1,46 @@
+def naiveFactor(n):
+
+  input = n
+  primes = []
+
+  for i in range(2, n+1):
+    while n % i == 0:
+      primes.append(i)
+      n = n // i
+
+  for i in range(0, len(primes)):
+    print(f"Primes of {input} are: {primes[i]}")
+
+  return primes
+
+#print(naiveFactor(21582))
+
+def greatCD(n, m):
+  primeN= naiveFactor(n)
+  primeM = naiveFactor(m)
+  tempN = 1
+  tempM = 1
+  gcd = 1
+
+  #print(len(primeN))
+  #print(len(primeM))
+
+  for i in range(0, len(primeN), 1):
+      tempN = primeN[i]
+     # print(100 + i)
+     # print(tempN)
+      for i in range(0, len(primeM), 1):
+        tempM = primeM[i]
+        #print(10000 + i)
+        #print(tempM)
+        if tempN == tempM and tempN > gcd:
+          gcd = tempN
+
+  print(f"The GCD is: {gcd}")
+
+#x = int(input("input first number"))
+#y = int(input("input second number"))
+
+#greatCD(x, y)
+
+greatCD(21582, 2310)
