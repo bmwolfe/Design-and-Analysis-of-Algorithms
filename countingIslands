@@ -1,0 +1,59 @@
+from collections import deque
+
+
+def count_islands(graph):
+    #makes sure there is a graph with values in it
+    if len(graph) == 0:
+        return 0
+
+    rows, cols = len(graph), len(graph[0])
+    islands = 0
+
+    def bfs(graph, start):
+        queue = deque() #creates our queue data structure
+        queue.append(start)
+        
+        '''
+        dropped the discovered variable from the notes as we keep track of it in the loop below
+        by changing values to -1 in the graph as we check them
+        '''
+        
+        while queue: 
+            r, c = queue.pop()
+            if 0 <= r < rows and 0 <= c < cols and graph[r][c] == 1: #checks for 0s and 1s
+                graph[r][c] = -1 #marking "visited" positions in the graph
+                for r1, c1 in [(1, 0), (-1, 0), (0, 1), (0, -1)]: #these lines find the connected pieces of land
+                    r2, c2 = r + r1, c + c1
+                    if 0 <= r2 < rows and 0 <= c2 < cols:
+                        queue.append((r2, c2)) #at most rows*cols elements appended
+        #this while all runs O(rows*cols) time
+
+    for i in range(rows): #O(rows)
+        for j in range(cols): #O(cols)
+            if graph[i][j] == 1: #checks for land
+                islands += 1
+                bfs(graph, (i,j)) #this runs in O(rows*cols) as seen above and 
+                                  #finds all connected pieces of land to the current island
+    
+    #this for loop section runs in O(rows*cols) time which is O(# of tiles)
+
+    return islands
+
+# Test cases
+start = (0,0)
+graph1 = [[1, 1, 0, 0, 0],
+          [0, 1, 0, 0, 1],
+          [1, 0, 1, 1, 1],
+          [0, 1, 0, 0, 0]]
+print(count_islands(graph1))
+
+graph2 = [[1, 1, 0, 0],
+          [0, 1, 0, 1],
+          [0, 1, 0, 1],
+          [0, 0, 1, 1]]
+print(count_islands(graph2)) 
+
+graph3 = [[0, 0, 0],
+          [0, 0, 0],
+          [0, 0, 0]]
+print(count_islands(graph3)) 
