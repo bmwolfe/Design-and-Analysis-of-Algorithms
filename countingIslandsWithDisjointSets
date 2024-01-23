@@ -1,0 +1,72 @@
+class DisjointSet: #all methods of DisjointSet are constant time or nearly constant time
+    def __init__(self):
+        self.parent = {}
+        
+        #changed this from a dictionary (in notes) to an integer since we want the number of islands.
+        self.rank = 0
+
+    def make_set(self, i):
+        self.parent[i] = i
+        self.rank += 1
+
+    def find(self, i):
+        while self.parent[i] != i:
+            i = self.parent[i]
+        return i
+
+    def union(self, i, j):
+        i = self.find(i)
+        j = self.find(j)
+
+        #adjusted the use of .rank is class code to .find() since we are checking the 1s and 0s in the graph
+        if self.find(i) < self.find(j):
+            self.parent[i] = j
+        elif self.find(i) > self.find(j):
+            self.parent[j] = i
+        else:
+            #the rank acts as the number of islands so when we combine them we reduce the total number of them
+            self.rank -= 1
+            self.parent[j] = i
+
+def count_islands(graph):
+    #makes sure there is a graph with values in it
+    if len(graph) == 0:
+        return 0
+
+    rows, cols = len(graph), len(graph[0])
+    disjoint_set = DisjointSet() #creates our disjoint set data structure
+
+    for i in range(rows):
+        for j in range(cols):
+            if graph[i][j] == 1: #checks for land
+                disjoint_set.make_set((i, j))
+    #this runs in O(rows*cols) time to make all possible islands
+
+    for i in range(rows):
+        for j in range(cols):
+            if graph[i][j] == 1:
+                for x, y in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+                    k, t = i + x, j + y
+                    if 0 <= k < rows and 0 <= t < cols and graph[k][t] == 1: #finds connected pieces of land
+                        disjoint_set.union((i, j), (k, t)) #this takes O(α(n)) which is nearly constant
+    #runs in O(rows*cols) time to find all adjacent pieces of land and connect them
+    
+    return disjoint_set.rank
+
+#Test cases
+graph1 = [[1, 1, 1, 0, 0],
+          [0, 1, 0, 0, 1],
+          [1, 1, 0, 1, 1],
+          [0, 0, 1, 0, 0]]
+print(count_islands(graph1)) 
+
+graph2 = [[1, 1, 0, 0],
+          [0, 1, 0, 0],
+          [0, 1, 0, 1],
+          [0, 0, 1, 1]]
+print(count_islands(graph2)) 
+
+graph3 = [[0, 0, 0],
+          [0, 0, 0],
+          [0, 0, 0]]
+print(count_islands(graph3))
