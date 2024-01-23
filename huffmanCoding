@@ -1,0 +1,42 @@
+import heapq
+
+def huffman(symbols, freqs):
+    heap = []
+    for i in range(len(symbols)):
+        heapq.heappush(heap, Node(symbols[i], freqs[i]))
+    
+    while len(heap)>1:
+        left = heapq.heappop(heap)
+        right = heapq.heappop(heap)
+        Paul = Node(None, left.freq + right.freq)
+        Paul.left = left
+        Paul.right = right
+        heapq.heappush(heap, Paul)
+    return heap
+
+class Node:
+    def __init__(self, symbol, freq):
+        self.symbol=symbol
+        self.freq=freq
+        self.left=None
+        self.right=None
+        
+    def __lt__(self,other):
+        return self.freq < other.freq
+
+def print_symbols(node, prefix=""):
+    if node is not None:
+        if node.symbol is not None:
+            print(f"Symbol: {node.symbol}, Frequency: {node.freq}, Huffman Code: {prefix}")
+        print_symbols(node.left, prefix + "0")
+        print_symbols(node.right, prefix + "1")
+
+symbols = ['A', 'B', 'C', 'D']
+freqs = [5, 9, 12, 13]
+result = huffman(symbols, freqs)
+root_node = result[0]  # Access the root node from the heap
+print(f"Root node symbol: {root_node.symbol}, frequency: {root_node.freq}")
+print(result)
+
+print("Symbols in Huffman Tree:")
+print_symbols(root_node)
