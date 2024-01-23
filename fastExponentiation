@@ -1,0 +1,8 @@
+def MP(x, a, m):
+	ret = 1
+	while a > 0:
+		if a % 2 == 1:
+			ret = (ret*x)%m
+		x = (x*x)%m
+		a = a//2
+	return ret
