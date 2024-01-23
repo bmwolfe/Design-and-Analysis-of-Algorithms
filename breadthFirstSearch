@@ -1,0 +1,44 @@
+from collections import deque
+
+def bfs(graph, start):
+    discovered = set()
+    queue = deque()
+    queue.append(start)
+    discovered.add(start)
+    while len(queue) > 0:
+        current = queue.popleft()
+        print(f"visited {current}")
+        for next in graph[current]:
+            if next not in discovered:
+                print(f"found {next}")
+                discovered.add(next)
+                queue.append(next)
+    
+
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B'],
+    'E': ['B', 'F'],
+    'F': ['C', 'E']
+}
+
+# Starting point for the BFS algorithm
+start_node = 'A'
+
+# Run BFS from the starting point in the graph
+bfs(graph, start_node)
+
+#this is in O(|V|+|E|)
+
+#This algorithm takes an adjacency list of points and searchs a spanning tree of them
+#It creates a set named discovered to track nodes we have found connected in the tree
+#And it creates a queue to track what nodes we have yet to visit
+
+#We add start to both the discovered set and the queue.
+#While there are nodes in the queue, we pop a node (FIFO) and save it as the current node
+#Now we check the nodes connected to the current node in its adjacency list through a loop
+
+#If the nodes we find are not in the discovered set, add them to discovered and the queue
+#and repeat.
