@@ -1,0 +1,36 @@
+import heapq
+
+def mostReliablePaths(graph, source):
+    rows = len(graph)  # Assuming the graph is represented as an adjacency list
+    dist = {node: 0 if node == source else 0.0 for node in range(rows)}
+    dist[source] = 1.0  # Reliability starts at 1 for the source node
+
+    unvisited = [(dist[source], source)]
+    heapq.heapify(unvisited)
+
+    while len(unvisited) > 0:
+        currentReliability, currentNode = heapq.heappop(unvisited)
+
+        for neighbor, reliability in graph[currentNode].items():
+            newReliability = currentReliability * reliability
+            if newReliability > dist[neighbor]:
+                dist[neighbor] = newReliability
+                heapq.heappush(unvisited, (newReliability, neighbor))
+
+    return dist
+
+# Test cases
+graph = {
+    0: {1: 0.5, 2: 0.9, 4: 0.6},
+    1: {2: 0.2, 3: 0.4, 4: 0.7},
+    2: {3: 0.3},
+    3: {4: 0.4},
+    4: {3: 0.1}
+}
+
+sourceNode = 0
+result = mostReliablePaths(graph, sourceNode)
+
+print("Most reliable paths from ", sourceNode)
+for node, reliability in result.items():
+    print("To:", node, "reliability is:", reliability)
