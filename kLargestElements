@@ -1,0 +1,60 @@
+def select_k_largest(A, k):
+    makeHeap(A) #O(n) time
+    res = []
+    
+    for i in range(k): #k calls of
+        max = extract(A) #the extract function which takes O(lgn) time
+        res.append(max)  
+    return res
+
+def makeHeap(A):
+    for i in range(len(A) - 1, -1, -1):
+        A = maxHeapifyDown(A, len(A), i)
+    return A
+
+#looks like O(nlgn) time but it is O(n) time when you look closer into the summation
+
+def maxHeapifyDown(A, size, i):
+    l = left(i)
+    r = right(i)
+    best=i
+    while l < size:
+        best = i
+        if A[i] < A[l]:
+            best = l
+            
+        if r < size and A[best] < A[r]:
+            best = r
+        
+        if best == i: 
+            break
+            
+        A[i], A[best] = A[best], A[i]
+        i = best
+        l = left(i)
+        r = right(i)
+        
+    return A
+
+#O(lgn) time
+
+def extract(A):
+
+    max = A[0]
+    A[0] = A.pop()
+    maxHeapifyDown(A, len(A), 0)
+    
+    return max
+
+#O(lgn) time
+
+def left(i):
+    x = (2 * i) + 1
+    return x
+
+def right(i):
+    y = (2 * i) + 2
+    return y
+
+S = [5, 3, 50, 90, 1000, 120, 150, 170, 200, 1]
+select_k_largest(S, 5)
