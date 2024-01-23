@@ -1,0 +1,19 @@
+def selectionSort(n):
+
+  x = len(n)
+
+  for i in range(x):
+    sm = i
+    for j in range(i+1, x):
+      if n[j] < n[sm]:
+        sm = j
+
+    (n[i], n[sm]) = (n[sm], n[i])
+
+
+  print("Sorted array is:")
+  print(n)
+
+
+
+selectionSort([1000, 5000, 10, 435, 663, 128, 798, 299])
