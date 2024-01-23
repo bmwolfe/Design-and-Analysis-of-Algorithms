@@ -1,0 +1,31 @@
+import heapq
+
+def prim(graph, start):
+    visited = set()
+    mst = []
+    edges = []
+
+    visited.add(start)
+    for (neighbor, weight) in graph[start]:
+        heapq.heappush(edges, (weight, start, neighbor))
+        while len(edges) > 0:
+            weight, prev, current = heapq.heappop(edges)
+            if current not in visited:
+                visited.add(current)
+                mst.append((prev,current))
+                for (neighbor, weight) in graph[current]:
+                    heapq.heappush(edges, (weight, current, neighbor))
+    return mst
+
+graph = {
+    'A': [('B', 2), ('C', 3)],
+    'B': [('A', 2), ('C', 1), ('D', 1)],
+    'C': [('A', 3), ('B', 1), ('D', 2)],
+    'D': [('B', 1), ('C', 2)]
+}
+
+start = 'A'  # Choose a starting node from the graph
+
+print(prim(graph, start))
+
+#O(|E|lg|E|)
