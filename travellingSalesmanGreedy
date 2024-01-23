@@ -1,0 +1,44 @@
+def greedy_tsm(graph):
+    n = len(graph)
+    if n == 0:
+        return []
+
+    unvisited = set(range(1, n))
+    current = 0
+    path = [current]
+    totalDistance = 0
+
+    while unvisited:                                                           # O(n)
+        neighbor = min(unvisited, key=lambda point: graph[current][point])     # O(n)
+        path.append(neighbor)
+        totalDistance += graph[current][neighbor]
+        unvisited.remove(neighbor)
+        current = neighbor
+
+    path.append(path[0])
+    totalDistance += graph[current][path[0]]
+
+    return path, totalDistance
+
+# Test Case That Fails
+exampleGraph = [
+    [0, 3, 9, 15],
+    [1, 0, 4, 3],
+    [9, 7, 0, 2],
+    [9, 3, 6, 0]
+] # Optimal Path is 0,2,3,1,0
+
+path, distance = greedy_tsm(exampleGraph)
+print("Greedy TSM Path:", path)
+print("Total Distance:", distance)
+
+# This Algorithm has a time complexity of O(n^2)
+
+# This algorithm can fail taking a path that can be infinitely longer than the optimal path since the algorithm
+# only takes the locally best options. In the above example, the algorithm choose to go to point 1 first as 3 is the
+# locally shortest distance. It then chooses point 3 as 3 is the locally shortest distance again. However, now we have
+# to go to point 2 which has a cost of 6. Then we must return to the starting point which has a cost of 9. For a total
+# cost of 21.
+
+# While the optimal solution goes to 2 first at a cost of 9, 3 at a cost of 2, 1 at a cost of 3, then back to 0 at a
+# cost of 1 for a total cost of 15, which is better than 21. You can see this in exercise 1.
