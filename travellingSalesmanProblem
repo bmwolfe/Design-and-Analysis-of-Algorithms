@@ -1,0 +1,36 @@
+import itertools
+
+def travelling_salesman(graph):
+    numVertices = len(graph)
+    vertices = [i for i in range(numVertices)]
+    
+    permutations = itertools.permutations(vertices)   # O(n!)
+
+    minCost = float('inf')
+    minPath = None
+
+    for perm in permutations:
+        cost = 0
+        for i in range(numVertices - 1):              # O(n)
+            cost += graph[perm[i]][perm[i + 1]]
+        cost += graph[perm[-1]][perm[0]]
+
+        if cost < minCost:
+            minCost = cost
+            minPath = perm
+
+    return minPath, minCost
+
+# Test Case
+graphExample = [
+    [0, 3, 9, 15],
+    [1, 0, 4, 3],
+    [9, 7, 0, 2],
+    [9, 3, 6, 0]
+]
+
+minPath, minCost = travelling_salesman(graphExample)
+print("Minimal Hamiltonian Cycle:", minPath)
+print("Minimal Weight of the Hamiltonian Cycle:", minCost)
+
+#This Algorithm has a time complexity of O(n!)
