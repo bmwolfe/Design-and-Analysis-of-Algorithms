@@ -1,0 +1,29 @@
+def bellman(graph, source):
+    dist = [float('inf')] * len(graph)
+    prev = [None] * len(graph)
+    dist[source] = 0
+    for _ in range(len(graph)):
+        for V1 in range(len(graph)):
+            for (V2, weight) in graph[V1]:
+                relax(V1, V2, weight)
+    return dist
+
+def relax(V1,V2,weight):
+    if dist[V1] + weight < dist[V2]:
+        dist[V2] = dist[V1] + weight
+        prev[V2] = V1
+
+
+# Test case
+graph = {
+    0: [(1, 4), (2, -1)],  # Node 0 is connected to Node 1 with weight 4 and Node 2 with weight 1
+    1: [(3, 2)],  # Node 1 is connected to Node 3 with weight 2
+    2: [(1, 2), (3, 5)],  # Node 2 is connected to Node 1 with weight 2 and Node 3 with weight 5
+    3: []  # Node 3 has no outgoing edges
+}
+
+source_node = 0
+distances, predecessors = dijkstra(graph, source_node)
+
+print("Distances from source node to each node:", distances)
+print("Predecessors for each node in the shortest path:", predecessors)
