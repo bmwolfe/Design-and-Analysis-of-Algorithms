@@ -1,0 +1,40 @@
+def dijkstra(graph, source):
+    numNodes = len(graph)
+    dist = [float('inf')] * numNodes
+    prev = [None] * numNodes
+    dist[source] = 0
+    unvisited = set(range(numNodes))
+
+    while unvisited:
+        next = min(unvisited, key=lambda node: dist[node])
+        unvisited.remove(next)
+
+        for target, weight in graph[next]:
+            if dist[next] + weight < dist[target]:
+                dist[target] = dist[next] + weight
+                prev[target] = next
+
+    return dist, prev
+
+# Test case
+#graph = {
+#    0: [(1, 4), (2, 1)],  # Node 0 is connected to Node 1 with weight 4 and Node 2 with weight 1
+#    1: [(3, 2)],  # Node 1 is connected to Node 3 with weight 2
+#    2: [(1, 2), (3, 5)],  # Node 2 is connected to Node 1 with weight 2 and Node 3 with weight 5
+#    3: []  # Node 3 has no outgoing edges }
+
+graph = {
+    0: [(1, 1), (2, 5)],
+    1: [(3, 1)],
+    2: [(3, -8)],
+    3: [(0, 2)]  # Create a "shortcut" edge from 'D' to 'A' with positive weight
+}
+
+source_node = 0
+
+distances, predecessors = dijkstra(graph, source_node)
+
+print("Distances from source node to each node:", distances)
+print("Predecessors for each node in the shortest path:", predecessors)
+
+#O(|V|^2)
