@@ -1,0 +1,26 @@
+#Trinomials
+#T (n, a, b) = T (n − 1, a − 1, b) + T (n − 1, a, b − 1) + T (n − 1, a, b)
+#Base cases: T(0,0,0) = 1 and T(n,a,b) = 0
+
+memo = {} #O(n*a*b) space: holding all combinations of n, a and b
+
+def trinomial(n, a, b):
+    
+    #set and check for the bases cases
+    if a == 0 and b == 0 and n == 0:
+        return 1
+        
+    if a < 0 or b < 0 or n < a + b:
+        return 0
+        
+    #fill the rest of the values
+    memo[n] = trinomial(n - 1, a - 1, b) + trinomial(n - 1, a, b-1) + trinomial(n - 1, a, b)
+    #O(n*a*b) time: worst case calling n*a*b times
+    #O(n) space: n since n is the largest depth for recursion based on n-1 in each call
+    return memo[n]
+
+#Tests
+
+#trinomial(5, 6, 3)
+trinomial(5, 2, 1)
+#trinomial(0,0,0)
