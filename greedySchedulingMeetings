@@ -1,0 +1,60 @@
+def meeting_rooms(meetings):
+    retMeetings = []
+    while len(meetings) > 0:
+        retMeetings.append([])
+        i = 0
+        while i < len(meetings):
+            if len(retMeetings[-1]) == 0:
+                retMeetings[-1].append(meetings[i])
+                meetings.remove(meetings[0])
+            elif meetings[i][0] >= retMeetings[-1][-1][1]:
+                retMeetings[-1].append(meetings[i])
+                meetings.remove(meetings[i])
+            else:
+                i+=1
+    return retMeetings
+
+
+meetings = [(1,5),(2,6),(5,8),(7,9),(6,10),(5,6),(2,3),(8,9)]
+meetings.sort()
+ret = meeting_rooms(meetings)
+print(f"First function: number of meeting rooms {len(ret)}\nand the meetings in each room: {ret}\n")
+
+def greedy_meeting_rooms(meetings):
+    meetingRooms = []
+    for i in range(len(meetings)):
+        if len(meetingRooms) == 0:
+             meetingRooms.append([meetings[i]])
+        else:
+            j = 0
+            while j < len(meetingRooms):
+                if meetings[i][0] >= meetingRooms[j][-1][1]:
+                    meetingRooms[j].append(meetings[i])
+                    break
+                    #j+= 1
+                elif j+1 < len(meetingRooms):
+                    j +=1
+                else:
+                    meetingRooms.append([meetings[i]])
+                    break
+
+    return meetingRooms
+    
+#Test cases
+meetings = [(1,5),(2,6),(5,8),(7,9),(6,10),(5,6),(2,3),(8,9)]
+meetings.sort()
+ret = greedy_meeting_rooms(meetings)
+print(f"Greedy algorithm with the first data set: number of meeting rooms {len(ret)} \nand the meetings in each room: {ret}\n\n")
+
+
+print("Required Homework tests\n")
+meetings = [(1,5),(5,6),(6,8),(8,9),(9,10)]
+meetings.sort()
+ret = greedy_meeting_rooms(meetings)
+print(f"Greedy algorithm with 1 room: number of meeting rooms {len(ret)} \nand the meetings in each room: {ret}\n")
+
+
+meetings = [(1,5),(2,6),(3,8),(3,9),(4,10)]
+meetings.sort()
+ret = greedy_meeting_rooms(meetings)
+print(f"Greedy algorithm with n rooms: number of meeting rooms {len(ret)} \nand the meetings in each room: {ret}")
