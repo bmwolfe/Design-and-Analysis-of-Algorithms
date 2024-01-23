@@ -1,0 +1,47 @@
+def select_k_largest(A, k):
+    B = [float('-inf')] * k # B gets size k
+
+    for i in range(k):
+        B[i] = A[i]
+
+    makeHeap(B) 
+
+    for i in range(k, len(A)): # up to n calls
+        if A[i] > B[0]:
+            B[0] = A[i]
+            minHeapifyDown(B, k, 0) # O(lgk) where k is the size of the heap
+    B.reverse()
+    return B
+
+def makeHeap(A):
+    n = len(A)
+    for i in range(n // 2 -1, -1, -1):
+        minHeapifyDown(A, len(A), i)
+        
+# O(n) time as seen by summation
+
+def minHeapifyDown(A, size, i):
+    l = 2 * i + 1
+    r = 2 * i + 2
+    best = i
+
+    while l < size:
+        best = i
+        if A[i] > A[l]:
+            best = l
+            
+        if r < size and A[best] > A[r]:
+            best = r
+        
+        if best == i: 
+            break
+            
+        A[i], A[best] = A[best], A[i]
+        i = best
+        l = left(i)
+        r = right(i)
+
+# O(lgn) time
+
+S = [5, 3, 50, 90, 1000, 120, 150, 170, 200, 1]
+select_k_largest(S, 3)
