@@ -1,0 +1,73 @@
+def dijkstra(graph, source):
+    numNodes = len(graph)
+    dist = [float('inf')] * numNodes
+    prev = [None] * numNodes
+    dist[source] = 0
+    unvisited = set(range(numNodes))
+
+    while unvisited:
+        next = min(unvisited, key=lambda node: dist[node])
+        unvisited.remove(next)
+
+        for target, weight in graph[next]:
+            if dist[next] + weight < dist[target]:
+                dist[target] = dist[next] + weight
+                prev[target] = next
+
+    return dist, prev
+
+def bellman(graph, source):
+    dist = [float('inf')] * len(graph)
+    prev = [None] * len(graph)
+    dist[source] = 0
+    for _ in range(len(graph)):
+        for V1 in range(len(graph)):
+            for (V2, weight) in graph[V1]:
+                relax(V1, V2, weight, dist, prev)
+    return dist
+
+def relax(V1,V2,weight, dist, prev):
+    if dist[V1] + weight < dist[V2]:
+        dist[V2] = dist[V1] + weight
+        prev[V2] = V1
+
+def johnson(graph):
+    m = len(graph)
+    newGraph = [row[:] for row in graph]
+    newGraph.append([(i,0) for i in range(m)])
+    phi = bellman(newGraph, m)
+    modifyGraph = [row[:] for row in newGraph] 
+    for u in range(m):
+        for idx in range(len(graph[u])):
+            v, weight = graph[u][idx]
+            modifyGraph[u][idx] = (v, weight + phi[u] - phi[v])
+    allDist = []
+    allPrev = []
+    for s in range(m):
+        sDist = [float('inf')] * m
+        sPrev = [None] * m
+        sDist, sPrev = dijkstra(modifyGraph, s)
+        allDist.append(sDist)
+        allPrev.append(sPrev)
+    return allDist, allPrev
+
+def print_result(allDist, allPrev):
+    print("Shortest Distances:")
+    for row in allDist:
+        print(row)
+
+    print("\nPredecessors:")
+    for row in allPrev:
+        print(row)
+
+# Test case
+graph = [
+    [(1, 3), (2, 1)],
+    [(2, 7), (3, 4)],
+    [(0, 2)],
+    [(1, 2)]
+]
+
+allDist, allPrev = johnson(graph)
+
+print_result(allDist, allPrev)
