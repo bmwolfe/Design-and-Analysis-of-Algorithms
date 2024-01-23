@@ -1,0 +1,52 @@
+class DisjointSet:
+    def __init__(self):
+        self.parent = {}
+        self.rank = {}
+
+    def make_set(self, i):
+        self.parent[i] = i
+        self.rank[i] = 0
+
+    def find(self, i):
+        while self.parent[i] != i:
+            i = self.parent[i]
+        return i
+
+    def union(self, i, j):
+        i = self.find(i)
+        j = self.find(j)
+        
+        if self.rank[i] < self.rank[j]:
+            self.parent[i] = j
+        elif self.rank[i] > self.rank[j]:
+            self.parent[j] = i
+        else:
+            self.rank[i] += 1
+            self.parent[j] = i
+
+def kruskal(graph):
+    sets = DisjointSet()
+    nodes = {node: i for i, node in enumerate(graph)}  # Mapping string labels to numeric indices
+    for node in nodes:
+        sets.make_set(nodes[node])
+    edges = []
+    for node in graph:
+        for neighbor, weight in graph[node]:
+            if node < neighbor:
+                edges.append((weight, nodes[node], nodes[neighbor]))
+    edges.sort()
+    mst = []
+    for weight, V1, V2 in edges:
+        if sets.find(V1) != sets.find(V2):
+            mst.append((list(nodes.keys())[V1], list(nodes.keys())[V2], weight))  # Mapping back to original labels
+            sets.union(V1, V2)
+    return mst
+
+graph = {
+    'A': [('B', 2), ('C', 3)],
+    'B': [('A', 2), ('C', 1), ('D', 1)],
+    'C': [('A', 3), ('B', 1), ('D', 2)],
+    'D': [('B', 1), ('C', 2)]
+}
+
+print(kruskal(graph))
