@@ -1,0 +1,21 @@
+def Kadane(A):
+    globalMax = A[0]
+    currentMax = A[0]
+    for i in range(1, len(A)-1): #O(n)
+        currentMax = max(currentMax + A[i], A[i])
+        globalMax = max(currentMax, globalMax)
+    return globalMax
+
+A = [1,-3,2,1,-1]
+
+Kadane(A) #this takes place in O(n) time
+
+
+#This algorithm sets the current and global max vals to the first value in the array (the first subarray)
+#Then it checks the sum of that value plus the next one to see if it is larger than the next value
+#If not, the next value is the maximal current sum. If it is, then the first two values are the maximal current sum.
+#Then it compares that current subarray with the global one. 
+#If the global is larger it changes nothing, if the current is lager it becomes the global.
+#Repeat until there are no values left to check.
+
+#This runs in O(n) time as you arent checking all possible subarrays but rather the one current max as you loop.
