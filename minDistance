@@ -1,0 +1,156 @@
+def min_distance(A):
+    if len(A) == 2:
+        return A
+        
+    elif len(A) == 3:
+        x = distance(A[0], A[1])
+        y = distance(A[1], A[2])
+        z = distance(A[0], A[2])
+        temp = float('inf')
+        results = []
+        if x < temp:
+            temp = x
+            results = [A[0], A[1]]
+        if y < temp:
+            temp = y
+            results = [A[1], A[2]]
+        if z < temp:
+            temp = z
+            results = [A[0], A[2]]
+        return results
+            
+    elif len(A) <= 1:
+        return A
+
+    else:
+        i = 0
+        total = 0
+        while i < len(A):
+            total += A[i][0]
+            i += 1
+            
+        xMid = total // len(A)
+
+        j = 0
+        l = []
+        r = []
+        best = 0
+        while j < len(A):
+            if A[j][0] <= xMid:
+                l.append(A[j])
+                j += 1
+            else:
+                r.append(A[j])
+                j += 1
+                
+        L = min_distance(l)
+        
+        R = min_distance(r)
+        
+        min = shortest(L, R)
+
+        minDist = distance(min[0], min[1])
+        
+        M = midPoint(xMid, A, min)
+        
+        if len(M) > 0:
+            mDist = distance(M[0], M[1])
+        
+            if minDist < mDist:
+                best = min
+            else:
+                best = M
+        else:
+            best = min
+        
+    return best
+
+def midPoint(mid, A, min):
+    
+    minDist = distance(min[0], min[1])
+    possibleLMidPts = []
+    possibleRMidPts = []
+    i = 0
+    bestDist = float('inf')
+    tuples=[]
+    
+    while i < len(A):
+        if A[i][0] <= minDist and A[i][0] >= -minDist:
+            if A[i][0] <= mid:
+                possibleLMidPts.append(A[i])
+            else:
+                possibleRMidPts.append(A[i])
+            i += 1
+        else:
+            i += 1
+
+    #print(f"mid is {mid} possible l mid pts = {possibleLMidPts} and r mid pts are {possibleRMidPts}")
+    j = 0
+    k = 0
+    
+    for j in range(0, len(possibleLMidPts)):
+        for k in range(0, len(possibleRMidPts)):
+            dist = distance(possibleLMidPts[j], possibleRMidPts[k])
+            if dist < bestDist:
+                bestDist = dist
+                tuples = [possibleLMidPts[j],possibleRMidPts[k]]
+            k += 1
+        j += 1
+    return tuples
+
+def shortest(L, R):
+    
+    result = []
+    i = 0
+    j = 0
+    if len(L) == 1:
+        return R
+    elif len(R) == 1:
+        return L
+
+    else:
+        dist1 = distance(L[0], L[1])
+        dist2 = distance(R[0], R[1])
+
+        if dist1 == dist2:
+            return L
+
+        elif dist1 < dist2:
+            return L
+
+        else:
+            return R
+
+def distance(x, y):
+    dist = ((y[0] - x[0])**2 + (y[1] - x[1])**2)**.5
+    return dist
+
+def number_generator():
+    a = 290797
+    while True:
+        yield a
+        a = a * a % 50515093
+
+def random_points():
+    points = []
+    gen = number_generator()
+    for i in range(2_000_000):
+        points.append((next(gen), next(gen)))
+    return points
+
+#The commented out lists of tuples are my datasets I tested the code with
+
+#pts = [(3,19),(4,3),(5,29),(6,29),(7,4),(8,19)]
+#pts = [(3,5),(3,10),(2,50),(4,51),(5,5),(5,11)]
+#pts = [(3,5),(3,10),(2,50),(4,1000),(5,5),(5,11)]
+pts = random_points()
+
+def turnPointsIntoDistance(pts):
+    tuple = min_distance(pts)
+    print(f"The returned points are {tuple} and the distance between them are:")
+    dis = distance(tuple[0], tuple[1])
+    return dis
+
+turnPointsIntoDistance(pts)
+
+#print(pts[0])
