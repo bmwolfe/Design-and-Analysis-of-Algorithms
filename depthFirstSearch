@@ -1,0 +1,36 @@
+def dfs(graph, start):
+    discovered = set()
+    startTime = {}
+    endTime = {}
+    time = [0]
+    def dfsInner(current):
+        discovered.add(current)
+        startTime[current] = time[0]
+        time[0] += 1
+        for neighbor in graph[current]:
+            if neighbor not in discovered:
+                dfsInner(neighbor)
+        endTime[current] = time[0]
+        time[0] += 1
+    dfsInner(start)
+
+    return startTime, endTime
+
+
+
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B'],
+    'E': ['B', 'F'],
+    'F': ['C', 'E']
+}
+
+# Starting point for the DFS algorithm
+start_node = 'A'
+
+# Run DFS from the starting point in the graph
+dfs(graph, start_node)
+
+#O(|V|+|E|)
